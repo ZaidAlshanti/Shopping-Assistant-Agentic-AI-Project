@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>AuraTech Shopping Assistant</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        #chat { height: 55vh; overflow-y: auto; padding: 1rem; border: 1px solid #8884; border-radius: 8px; }
+        .msg { margin: .5rem 0; padding: .6rem .9rem; border-radius: 10px; white-space: pre-wrap; max-width: 85%; }
+        .user { background: #1095c133; margin-left: auto; }
+        .bot  { background: #8882; }
+        .approval { border: 2px solid #f5a623; background: #f5a62315; }
+        .row { display: flex; gap: .5rem; }
+        .row input { flex: 1; margin: 0; }
+    </style>
+</head>
+<body class="container" style="padding-top: 30px;">
+    <h1>🛒 AuraTech Shopping Assistant</h1>
+    <div id="chat"></div>
+
+    <div class="row" style="margin-top: 1rem;">
+        <input id="input" type="text" dir="auto" placeholder="Ask about products, orders, returns…" autocomplete="off">
+        <button id="send" style="width: auto; margin: 0;">Send</button>
+    </div>
+
+<script>
+    const sessionId = sessionStorage.getItem("sid") || crypto.randomUUID();
+    sessionStorage.setItem("sid", sessionId);
+
+    const chat = document.getElementById("chat");
+    const input = document.getElementById("input");
+    const sendBtn = document.getElementById("send");
+
+    function addMsg(text, cls) {
+        const div = document.createElement("div");
+        div.className = "msg " + cls;
+        div.dir = "auto";              // Arabic and English both render correctly
+        div.textContent = text;        // textContent avoids HTML injection
+        chat.appendChild(div);
+        chat.scrollTop = chat.scrollHeight;
+        return div;
+    }
+
+    function setBusy(busy) {
+        sendBtn.disabled = busy;
+        input.disabled = busy;
+        if (!busy) input.focus();
+    }
+
+    async function post(url, body) {
+        const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ session_id: sessionId, ...body }),
+        });
+        return res.json();
+    }
+
+    function handle(data, thinking) {
+        thinking.remove();
+        if (data.type === "message") {
+            addMsg(data.content, "bot");
+        } else if (data.type === "approval") {
+            showApproval(data.actions);
+        } else {
+            addMsg("Error: " + data.content, "bot");
+        }
+    }
+
+    function showApproval(actions) {
+        const box = addMsg("", "bot approval");
+        const text = actions.map(a =>
+            `${a.name}\n${JSON.stringify(a.args, null, 2)}` +
+            (a.description ? `\n${a.description}` : "")
+        ).join("\n\n");
+        box.textContent = "Return request requires your approval:\n\n" + text + "\n\n";
+
+        for (const [label, value] of [["Approve", "approve"], ["Reject", "reject"]]) {
+            const btn = document.createElement("button");
+            btn.textContent = label;
+            btn.style.cssText = "width:auto; margin-right:.5rem;";
+            if (value === "reject") btn.className = "secondary";
+            btn.onclick = async () => {
+                box.querySelectorAll("button").forEach(b => b.disabled = true);
+                setBusy(true);
+                const thinking = addMsg("…", "bot");
+                try {
+                    handle(await post("/api/decision", { decision: value }), thinking);
+                } catch (e) {
+                    thinking.remove();
+                    addMsg("Error: " + e, "bot");
+                }
+                setBusy(false);
+            };
+            box.appendChild(btn);
+        }
+    }
+
+    async function send() {
+        const text = input.value.trim();
+        if (!text) return;
+        input.value = "";
+        addMsg(text, "user");
+        setBusy(true);
+        const thinking = addMsg("…", "bot");
+        try {
+            handle(await post("/api/chat", { message: text }), thinking);
+        } catch (e) {
+            thinking.remove();
+            addMsg("Error: " + e, "bot");
+        }
+        setBusy(false);
+    }
+
+    sendBtn.onclick = send;
+    input.addEventListener("keydown", e => { if (e.key === "Enter") send(); });
+</script>
+</body>
+</html>

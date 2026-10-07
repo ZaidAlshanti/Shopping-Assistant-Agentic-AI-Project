@@ -1,0 +1,10 @@
+{
+    "orders": [
+        {"customer_id": "C001", "status": "delivered",
+         "items": [{"product_id": "P04", "quantity": 1}]},
+        {"customer_id": "C002", "status": "shipped",
+         "items": [{"product_id": "P05", "quantity": 2}]},
+        {"customer_id": "C003", "status": "processing",
+         "items": [{"product_id": "P01", "quantity": 1}]}
+    ]
+}

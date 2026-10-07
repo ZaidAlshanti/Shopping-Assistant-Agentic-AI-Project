@@ -1,0 +1,17 @@
+# secrets
+.env
+.env.*
+!.env.example
+
+# python
+.venv/
+__pycache__/
+*.pyc
+
+# local data and outputs (adjust to your project)
+qdrant_data/
+*.db
+reports/
+qdrant_local/
+src/RAG/Evaluation/Responses.txt
+src/RAG/ReturnRequests/Returns.txt
