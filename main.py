@@ -17,7 +17,7 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from pydantic import BaseModel
 
-from src.RAG.agent1 import build_agent
+from src.RAG.agent import build_agent
 
 from langsmith import utils, Client
 print("TRACING:", os.getenv("LANGSMITH_TRACING"), "/", os.getenv("LANGCHAIN_TRACING_V2"))

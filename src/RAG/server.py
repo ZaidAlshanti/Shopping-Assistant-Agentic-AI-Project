@@ -14,53 +14,6 @@ from FlagEmbedding import BGEM3FlagModel
 # Create a project (called a "Workspace Dataset" or "Project" in the UI)
 
 # ============================================================
-# Oracle configuration
-# ============================================================
-
-# db_user = "sys"
-# db_password = "123"
-# db_dsn = "127.0.0.1:1521/freepdb1"
-
-
-# try:
-
-#     connection = oracledb.connect(
-#         user=db_user,
-#         password=db_password,
-#         dsn=db_dsn,
-#         mode=oracledb.SYSDBA,
-#     )
-
-#     print(
-#         "Successfully connected to the Oracle Database!",
-#         file=sys.stderr,
-#         flush=True,
-#     )
-
-#     print(
-#         f"Database Version: {connection.version}",
-#         file=sys.stderr,
-#         flush=True,
-#     )
-
-# except oracledb.DatabaseError as e:
-
-#     error, = e.args
-
-#     print(
-#         (
-#             f"Database connection failed. "
-#             f"Error code: {error.code}, "
-#             f"message: {error.message}"
-#         ),
-#         file=sys.stderr,
-#         flush=True,
-#     )
-
-#     sys.exit(1)
-
-
-# ============================================================
 # MCP
 # ============================================================
 

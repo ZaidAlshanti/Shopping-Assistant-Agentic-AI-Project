@@ -4,7 +4,7 @@ from FlagEmbedding import BGEM3FlagModel
 from qdrant_client import QdrantClient
 from qdrant_client.http import models
 from prepareChunks import get_all_chunks
-
+#Hi
 def main():
     # 1. Fetch the data using the imported function
     print("Loading documents...")
