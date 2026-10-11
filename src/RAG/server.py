@@ -24,30 +24,27 @@ mcp = FastMCP("ShopAssistant")
 # Qdrant
 # ============================================================
 
-print(
-    "Loading Embedding Model...",
-    file=sys.stderr,
-    flush=True,
-)
+# print(
+#     "Loading Embedding Model...",
+#     file=sys.stderr,
+#     flush=True,
+# )
 
-embedding_model = BGEM3FlagModel(
-    "BAAI/bge-m3",
-    use_fp16=True,
-)
+# embedding_model = BGEM3FlagModel(
+#     "BAAI/bge-m3",
+#     use_fp16=True,
+# )
 
-QDRANT_URL = os.getenv(
-    "QDRANT_URL",
-    "http://localhost:6333",
-)
 
-COLLECTION_NAME = os.getenv(
-    "QDRANT_COLLECTION_NAME",
-    "shopassist_knowledge",
-)
+# COLLECTION_NAME = os.getenv(
+#     "QDRANT_COLLECTION_NAME",
+#     "shopassist_knowledge_v1",
+# )
+embedding_model = BGEM3FlagModel("BAAI/bge-m3", use_fp16=True)   # fp16 is for GPUs
 
-qdrant_client = QdrantClient(
-    url=QDRANT_URL
-)
+COLLECTION_NAME = "shopassist_knowledge"          # must match the ingestion script exactly
+
+qdrant_client = QdrantClient(url="http://localhost:6333")
 
 
 # ============================================================

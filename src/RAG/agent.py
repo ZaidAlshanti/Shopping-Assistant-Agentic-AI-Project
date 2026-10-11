@@ -287,6 +287,8 @@ def build_agent(tools,checkpointer):
                 The application automatically records the final response
                 using record_response, so you do not need to call that
                 tool yourself.
+
+
                 
                 """
                 
