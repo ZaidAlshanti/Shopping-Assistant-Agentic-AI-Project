@@ -44,7 +44,7 @@ chunker = SemanticChunker(
     breakpoint_threshold_type="percentile",
     breakpoint_threshold_amount=85,
     min_chunk_size=200,
-    buffer_size=2
+    buffer_size=1
 )
 # BGE-M3: produces the vectors stored in Qdrant
 
