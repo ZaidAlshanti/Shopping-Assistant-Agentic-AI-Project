@@ -1,0 +1,14 @@
+Dear PwC Recruitment Team,
+
+I am writing to express my strong interest in the AI Engineer Associate position at PwC. With a background in Data Science and Artificial Intelligence and hands-on experience building machine learning, NLP, data engineering, and automation projects, I am eager to begin my professional career in an environment where I can work on meaningful AI solutions and learn from experienced professionals.
+
+Throughout my studies and projects, I have developed a strong foundation in Python, SQL, machine learning, deep learning, NLP, and data processing. I have worked with technologies including TensorFlow, scikit-learn, Pandas, Spark, Kafka, Hugging Face, FastAPI, and large-scale data processing tools. Beyond coursework, I have consistently focused on building practical systems rather than only studying theoretical concepts from predictive models and NLP applications to data-driven monitoring and automation projects. These experiences have strengthened my ability to approach unfamiliar problems, learn new technologies quickly, and turn ideas into working solutions.
+
+What particularly attracts me to PwC is the opportunity to apply AI to real business problems where technical solutions need to be reliable, scalable, and genuinely useful. I am particularly interested in developing intelligent systems that combine machine learning with data engineering and automation, while continuously improving my understanding of production AI and modern software engineering practices.
+
+I would bring to PwC strong technical curiosity, a disciplined approach to problem-solving, and a genuine willingness to learn. I am not looking for a role where I simply apply what I already know; I am looking for an environment that challenges me to become a stronger AI engineer while allowing me to contribute from day one. I believe the AI Engineer Associate position at PwC would be an excellent fit for both my current capabilities and my long-term goal of building impactful AI systems.
+
+Thank you for considering my application. I would welcome the opportunity to discuss how my background, technical skills, and motivation could contribute to PwC's AI and technology teams.
+
+Sincerely,
+Zaid Alshanti

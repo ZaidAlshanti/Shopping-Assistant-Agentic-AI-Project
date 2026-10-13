@@ -34,8 +34,9 @@ def build_agent(tools,checkpointer):
                 #                 temperature=0.2,
                 #             )
                 model = ChatOllama(
-                                model="qwen3.5:9b",
-                                temperature=0.2,
+                                model="qwen3.5:4b",
+                                temperature=0,
+                                num_ctx=4096,
                             )
                 
                             # =================================================

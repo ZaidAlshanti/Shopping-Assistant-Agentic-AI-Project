@@ -77,6 +77,11 @@
         </button>
     </div>
 
+    <!-- Clear chat session -->
+     <div>
+        <button id="reset-btn" onclick="resetChat()">🔄 Reset Chat</button>
+     </div>
+
     <!-- File upload -->
     <div class="row" style="margin-top: 1rem;">
         <input
@@ -102,10 +107,12 @@
     // Session
     // ============================================================
 
-    const sessionId =
-        sessionStorage.getItem("sid") || crypto.randomUUID();
+    let sessionId = sessionStorage.getItem("sid");
 
+    if (!sessionId) {
+    sessionId = crypto.randomUUID();
     sessionStorage.setItem("sid", sessionId);
+        }
 
 
     // ============================================================
@@ -124,6 +131,30 @@
     const fileInput = document.getElementById("file");
     const uploadBtn = document.getElementById("upload");
     const uploadStatus = document.getElementById("upload-status");
+
+    // ============================================================
+    // Clear chat session button
+    // ============================================================
+    
+
+    
+function resetChat() {
+    // Clear the visible conversation.
+    chat.innerHTML = "";
+
+    // Start a new LangGraph conversation thread.
+    sessionId = crypto.randomUUID();
+    sessionStorage.setItem("sid", sessionId);
+
+    // Clear any pending input.
+    input.value = "";
+
+    // Restore the chat controls.
+    setBusy(false);
+
+    // Optional confirmation.
+    addMsg("New conversation started.", "bot");
+}
 
 
     // ============================================================
@@ -298,6 +329,7 @@
 
         setBusy(false);
     }
+
 
 
     // ============================================================

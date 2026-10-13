@@ -293,7 +293,6 @@ def set_returns(
 @mcp.tool()
 def search_knowledge_base(
     query: str,
-    top_k: int = 3,
 ) -> str:
 
     """
@@ -304,6 +303,7 @@ def search_knowledge_base(
     - customer reviews
     - help articles
     """
+    top_k = 3
 
     try:
 

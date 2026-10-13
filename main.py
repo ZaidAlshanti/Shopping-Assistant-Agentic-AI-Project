@@ -18,6 +18,7 @@ from langchain_core.messages import HumanMessage
 from langchain_mcp_adapters.tools import load_mcp_tools
 
 from langgraph.checkpoint.memory import MemorySaver
+from langchain_community.chat_message_histories import ChatMessageHistory
 from langgraph.types import Command
 
 from mcp import ClientSession, StdioServerParameters
@@ -29,9 +30,12 @@ from src.RAG.agent import build_agent
 from src.RAG.upload import handle_file_upload, ingest_text
 
 
+
+
 # ============================================================
 # Paths
 # ============================================================
+session_memories = {} 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -358,7 +362,21 @@ async def decision(body: DecisionIn):
             status_code=500,
         )
 
-
+# ============================================================
+# Clear chat session
+# ============================================================
+@app.post("/api/chat/reset")
+async def reset_chat(session_id: str):
+    if session_id in session_memories:
+        # Option A: If using a standard LangChain memory object
+        # session_memories[session_id].clear()
+        
+        # Option B: Completely delete or overwrite the session's history
+        session_memories[session_id] = [] 
+        
+        return {"status": "success", "message": f"Memory cleared for session {session_id}"}
+    
+    return {"status": "success", "message": "No active session memory to clear."}
 # ============================================================
 # Knowledge-base upload
 # ============================================================
