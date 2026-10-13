@@ -2,12 +2,13 @@ import os
 import sys
 import json
 
+from openai import models
 import pandas as pd
 import psycopg2
 import psycopg2.extras
 
 from mcp.server.fastmcp import FastMCP
-from qdrant_client import QdrantClient
+from qdrant_client import QdrantClient,models
 from FlagEmbedding import BGEM3FlagModel
 
 
@@ -36,9 +37,10 @@ mcp = FastMCP("ShopAssistant")
 
 embedding_model = BGEM3FlagModel("BAAI/bge-m3", use_fp16=True)   # fp16 is for GPUs
 
-COLLECTION_NAME = "shopassist_knowledge_v1"          # must match the ingestion script exactly
+COLLECTION_NAME = "shopassist_knowledge_v2"          # must match the ingestion script exactly
 
 qdrant_client = QdrantClient(url="http://localhost:6333")
+
 
 
 # ============================================================
@@ -291,90 +293,121 @@ def set_returns(
 # ============================================================
 
 @mcp.tool()
-def search_knowledge_base(
-    query: str,
-) -> str:
-
+def search_knowledge_base(query: str) -> str:
     """
-    Search the AuraTech knowledge base for:
+    Search the AuraTech knowledge base using hybrid retrieval.
 
-    - return policies
-    - shipping information
-    - customer reviews
-    - help articles
+    Searches return policies, shipping information, customer
+    reviews, help articles, and other indexed documents.
+
+    Uses BGE-M3 dense and learned sparse vectors with RRF fusion.
     """
+
     top_k = 3
 
     try:
+        qry = query.strip()
 
-        query_vector = embedding_model.encode(
-            query,
+        if not qry:
+            return "Please provide a search query."
+
+        # Use the SAME BGE-M3 model used during ingestion.
+        encoded = embedding_model.encode(
+            [qry],
             batch_size=1,
-            max_length=512,
-        )["dense_vecs"].tolist()
-
-        search_results = (
-            qdrant_client.query_points(
-                collection_name=COLLECTION_NAME,
-                query=query_vector,
-                limit=top_k,
-            )
-            .points
+            max_length=1024,
+            return_dense=True,
+            return_sparse=True,
+            return_colbert_vecs=False,
         )
 
-    except Exception as e:
+        dense_vector = encoded["dense_vecs"][0].tolist()
+        sparse_weights = encoded["lexical_weights"][0]
 
+        sparse_vector = models.SparseVector(
+            indices=[
+                int(token_id)
+                for token_id in sparse_weights.keys()
+            ],
+            values=[
+                float(weight)
+                for weight in sparse_weights.values()
+            ],
+        )
+
+        # Retrieve candidates from both vector indexes and fuse
+        # their rankings using Reciprocal Rank Fusion.
+        response = qdrant_client.query_points(
+            collection_name=COLLECTION_NAME,
+            prefetch=[
+                models.Prefetch(
+                    query=dense_vector,
+                    using="dense",
+                    limit=20,
+                ),
+                models.Prefetch(
+                    query=sparse_vector,
+                    using="bm25",
+                    limit=20,
+                ),
+            ],
+            query=models.FusionQuery(
+                fusion=models.Fusion.RRF
+            ),
+            limit=top_k,
+            with_payload=True,
+        )
+
+        search_results = response.points
+
+    except Exception as e:
         print(
             f"Knowledge-base search failed: {e}",
             file=sys.stderr,
             flush=True,
         )
-
-        return (
-            "The knowledge base could not be "
-            "searched."
-        )
+        return "The knowledge base could not be searched."
 
     if not search_results:
-
-        return (
-            "No relevant information found "
-            "in the knowledge base."
-        )
+        return "No relevant information found in the knowledge base."
 
     formatted_results = []
 
-    for i, hit in enumerate(search_results):
+    for i, hit in enumerate(search_results, start=1):
+        payload = hit.payload or {}
 
-        payload = hit.payload
+        source = payload.get("source", "Unknown")
+        text = payload.get("text", "")
+        parent_text = payload.get("parent_text", "")
 
-        citation = (
-            f"[{payload.get('source', 'Unknown')} "
-            f"> "
-            f"{payload.get('section', 'Unknown')}]"
-        )
+        citation = f"[{source}]"
 
         chunk_info = (
-            f"--- Document {i + 1} ---\n"
+            f"--- Document {i} ---\n"
             f"Citation: {citation}\n"
-            f"Type: "
-            f"{payload.get('type', 'Unknown').upper()}\n"
-            f"Content: "
-            f"{payload.get('text', '')}\n"
+            f"Relevance score: {hit.score:.4f}\n"
+            f"Content:\n{text}\n"
         )
 
-        formatted_results.append(
-            chunk_info
-        )
+        # Neighboring context is available because ingestion stores it.
+        if parent_text and parent_text != text:
+            chunk_info += (
+                f"Additional context:\n{parent_text}\n"
+            )
+
+        formatted_results.append(chunk_info)
 
     system_instruction = (
-        "When answering using this data, "
-        "preserve the exact Citation string "
-        "provided for relevant information."
+        "Answer using the retrieved evidence. "
+        "Preserve the exact Citation string when citing a source. "
+        "Do not invent policies, product details, or citations. "
+        "If the retrieved evidence does not answer the question, "
+        "state that the available knowledge base does not provide "
+        "enough information."
     )
 
     return (
-        "\n".join(formatted_results)
+        "\n\n".join(formatted_results)
         + "\n\n"
         + system_instruction
     )

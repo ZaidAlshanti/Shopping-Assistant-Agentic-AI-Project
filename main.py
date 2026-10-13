@@ -1,6 +1,7 @@
 import asyncio
 import os
 import sys
+import uuid
 
 from contextlib import AsyncExitStack, asynccontextmanager
 
@@ -14,11 +15,11 @@ from fastapi import FastAPI, Request, File, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.templating import Jinja2Templates
 
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, AIMessage
 from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain_openai import ChatOpenAI
 
 from langgraph.checkpoint.memory import MemorySaver
-from langchain_community.chat_message_histories import ChatMessageHistory
 from langgraph.types import Command
 
 from mcp import ClientSession, StdioServerParameters
@@ -28,14 +29,13 @@ from pydantic import BaseModel
 
 from src.RAG.agent import build_agent
 from src.RAG.upload import handle_file_upload, ingest_text
-
-
+from src.RAG.session_memory import SessionRecorder
+from src.RAG.cache.semantic_cache import SemanticCache
 
 
 # ============================================================
 # Paths
 # ============================================================
-session_memories = {} 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -86,24 +86,38 @@ async def lifespan(app: FastAPI):
 
         tools = await load_mcp_tools(session)
 
+        app.state.tools = tools
         app.state.tools_by_name = {
             tool.name: tool
             for tool in tools
         }
 
-        app.state.agent = build_agent(
-            tools,
-            MemorySaver()
+        app.state.checkpointer = MemorySaver()      # one shared checkpointer
+        app.state.recorder = SessionRecorder(
+            ChatOpenAI(model="gpt-4o-mini", temperature=0)
         )
+        app.state.cache = SemanticCache()
+        app.state.threads = {}      # session_id -> current thread_id
 
         # session_id -> number of pending approval actions
         app.state.pending = {}
+
+        # summarise journals left by a crashed run BEFORE building the agent
+        await app.state.recorder.close_all()
+
+        app.state.agent = build_agent(
+            tools,
+            app.state.checkpointer,
+        )
 
         print(
             f"MCP connected, {len(tools)} tools loaded"
         )
 
         yield
+
+        # system shutdown: summarise every active session
+        await app.state.recorder.close_all()
 
     # MCP connection closes here.
 
@@ -136,6 +150,39 @@ class DecisionIn(BaseModel):
 
 
 # ============================================================
+# Cache helpers
+# ============================================================
+
+IGNORED_TOOLS = {"set_returns", "write_reports"}
+
+CACHEABLE_TOOLS = {
+    "search_knowledge_base",
+    "get_stock_and_compatible_lookup",
+    "get_order_status",
+    "record_response",
+}
+
+MIN_CACHE_WORDS = 5
+
+
+def is_self_contained(q: str) -> bool:
+    # Very short messages ("and shipping?", "what about it?") rely on earlier turns.
+    return len(q.split()) >= MIN_CACHE_WORDS
+
+
+def tools_used_this_turn(messages) -> set:
+    last_human = max(
+        (i for i, m in enumerate(messages) if m.type == "human"),
+        default=-1,
+    )
+    return {
+        tc["name"]
+        for m in messages[last_human + 1:]
+        for tc in (getattr(m, "tool_calls", None) or [])
+    }
+
+
+# ============================================================
 # Agent execution
 # ============================================================
 
@@ -143,11 +190,14 @@ async def run_agent(
     app: FastAPI,
     session_id: str,
     payload,
+    cache_query: str | None = None,
 ):
+
+    thread_id = app.state.threads.get(session_id, session_id)
 
     config = {
         "configurable": {
-            "thread_id": session_id
+            "thread_id": thread_id
         }
     }
 
@@ -200,21 +250,41 @@ async def run_agent(
 
     final = result["messages"][-1].content
 
+    last_user = next(
+        (
+            message.content
+            for message in reversed(result["messages"])
+            if message.type == "human"
+        ),
+        "",
+    )
+
+    # Session log used for the end-of-session summary.
+    app.state.recorder.log(session_id, "user", last_user)
+    app.state.recorder.log(session_id, "assistant", final)
+
+    # Cache answers that only used cacheable tools.
+    used = tools_used_this_turn(result["messages"]) - IGNORED_TOOLS
+    print(f"[cache] cache_query={cache_query!r} tools_used={used}")
+
+    if cache_query and used and used <= CACHEABLE_TOOLS:
+        try:
+            await asyncio.to_thread(
+                app.state.cache.put,
+                cache_query,
+                final,
+            )
+        except Exception as e:
+            print(
+                f"Warning: cache write failed: {e}"
+            )
+
     # Record interaction using MCP tool.
     record_tool = app.state.tools_by_name.get(
         "record_response"
     )
 
     if record_tool:
-
-        last_user = next(
-            (
-                message.content
-                for message in reversed(result["messages"])
-                if message.type == "human"
-            ),
-            "",
-        )
 
         try:
             await record_tool.ainvoke(
@@ -260,6 +330,51 @@ async def chat(body: ChatIn):
 
     try:
 
+        recorder = app.state.recorder
+        cacheable = is_self_contained(body.message)
+
+        if cacheable:
+            try:
+                hit = await asyncio.to_thread(
+                    app.state.cache.get,
+                    body.message,
+                )
+            except Exception as e:      # Ollama down etc.: skip the cache
+                print(f"Warning: cache lookup failed: {e}")
+                hit = None
+
+            print(f"[cache] cacheable=True hit={bool(hit)}")
+
+            if hit:
+                recorder.log(body.session_id, "user", body.message)
+                recorder.log(body.session_id, "assistant", hit)
+
+                # Keep the agent's conversation history in sync, so a later
+                # follow-up knows this exchange happened.
+                thread_id = app.state.threads.get(
+                    body.session_id,
+                    body.session_id,
+                )
+                try:
+                    await app.state.agent.aupdate_state(
+                        {"configurable": {"thread_id": thread_id}},
+                        {
+                            "messages": [
+                                HumanMessage(content=body.message),
+                                AIMessage(content=hit),
+                            ]
+                        },
+                    )
+                except Exception as e:
+                    print(
+                        f"Warning: could not sync cached turn into history: {e}"
+                    )
+
+                return {
+                    "type": "message",
+                    "content": hit,
+                }
+
         payload = {
             "messages": [
                 HumanMessage(
@@ -272,6 +387,7 @@ async def chat(body: ChatIn):
             app,
             body.session_id,
             payload,
+            cache_query=body.message if cacheable else None,
         )
 
     except Exception as e:
@@ -362,21 +478,37 @@ async def decision(body: DecisionIn):
             status_code=500,
         )
 
+
 # ============================================================
 # Clear chat session
 # ============================================================
+
 @app.post("/api/chat/reset")
 async def reset_chat(session_id: str):
-    if session_id in session_memories:
-        # Option A: If using a standard LangChain memory object
-        # session_memories[session_id].clear()
-        
-        # Option B: Completely delete or overwrite the session's history
-        session_memories[session_id] = [] 
-        
-        return {"status": "success", "message": f"Memory cleared for session {session_id}"}
-    
-    return {"status": "success", "message": "No active session memory to clear."}
+
+    app.state.pending.pop(session_id, None)
+
+    # Summarise this session into Agents.md.
+    await app.state.recorder.close(session_id)
+
+    # Fresh conversation: new checkpointer thread.
+    app.state.threads[session_id] = (
+        f"{session_id}-{uuid.uuid4().hex[:8]}"
+    )
+
+    # Rebuild so the new summary is in the prompt. The checkpointer
+    # is shared, so other users' sessions are not lost.
+    app.state.agent = build_agent(
+        app.state.tools,
+        app.state.checkpointer,
+    )
+
+    return {
+        "status": "success",
+        "message": f"Session {session_id} summarised and cleared.",
+    }
+
+
 # ============================================================
 # Knowledge-base upload
 # ============================================================
@@ -404,6 +536,9 @@ async def upload_file(
             text,
             name,
         )
+
+        # Cached answers may now be stale.
+        app.state.cache.clear()
 
     except ValueError as e:
 
