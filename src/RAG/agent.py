@@ -203,6 +203,7 @@ def build_agent(tools,checkpointer):
             ),
         },
     ),
+    checkpointer=checkpointer,
 
                 )
 

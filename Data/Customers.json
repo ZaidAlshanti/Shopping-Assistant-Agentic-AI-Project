@@ -1,5 +1,5 @@
 [
-    {"id": "C001", "name": "Ali Eyad"},
-    {"id": "C002", "name": "Sarah Ahmed"},
-    {"id": "C003", "name": "John Smith"}
+    {"id": "C001", "name": "Ali Eyad", "email": "ali.eyad@example.com"},
+    {"id": "C002", "name": "Sarah Ahmed", "email": "sarah.ahmed@example.com"},
+    {"id": "C003", "name": "John Smith", "email": "john.smith@example.com"}
 ]

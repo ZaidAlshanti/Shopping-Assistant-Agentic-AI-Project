@@ -1,6 +1,7 @@
 import asyncio
 import os
 import sys
+from typing_extensions import final
 import uuid
 
 from contextlib import AsyncExitStack, asynccontextmanager
@@ -12,7 +13,7 @@ from dotenv import find_dotenv, load_dotenv
 load_dotenv(find_dotenv(usecwd=True), override=True)
 
 from fastapi import FastAPI, Request, File, UploadFile
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 from fastapi.templating import Jinja2Templates
 
 from langchain_core.messages import HumanMessage, AIMessage
@@ -31,6 +32,9 @@ from src.RAG.agent import build_agent
 from src.RAG.upload import handle_file_upload, ingest_text
 from src.RAG.session_memory import SessionRecorder
 from src.RAG.cache.semantic_cache import SemanticCache
+from login import signin, signup
+from src.RAG.safety import check_input, check_output
+
 
 
 # ============================================================
@@ -55,6 +59,7 @@ TEMPLATES_DIR = os.path.join(
 assert os.path.exists(
     SERVER_PATH
 ), f"server.py not found at {SERVER_PATH}"
+
 
 
 # ============================================================
@@ -259,6 +264,11 @@ async def run_agent(
         "",
     )
 
+    allowed, final = await check_output(str(final))
+
+    if not allowed:
+        return {"type": "message", "content": final}
+
     # Session log used for the end-of-session summary.
     app.state.recorder.log(session_id, "user", last_user)
     app.state.recorder.log(session_id, "assistant", final)
@@ -267,7 +277,7 @@ async def run_agent(
     used = tools_used_this_turn(result["messages"]) - IGNORED_TOOLS
     print(f"[cache] cache_query={cache_query!r} tools_used={used}")
 
-    if cache_query and used and used <= CACHEABLE_TOOLS:
+    if allowed and cache_query and used and used <= CACHEABLE_TOOLS:
         try:
             await asyncio.to_thread(
                 app.state.cache.put,
@@ -308,17 +318,36 @@ async def run_agent(
 # ============================================================
 # Main page
 # ============================================================
-
-@app.get(
-    "/",
-    response_class=HTMLResponse
-)
+@app.get("/login.js")
+async def get_login_js():
+    return FileResponse(
+        os.path.join(TEMPLATES_DIR, "login.js"),
+        media_type="application/javascript"
+    )
+@app.get("/", response_class=HTMLResponse)
+def read_root(request: Request):
+    return templates.TemplateResponse(
+        request=request,
+        name="login.html",
+    )
 def read_root(request: Request):
 
     return templates.TemplateResponse(
         request=request,
-        name="index.html",
+        name=["index.html", "login.html"],
     )
+
+# ============================================================
+# login and signup
+# ============================================================
+@app.post("/api/signin")
+async def login_user(email: str, password: str):
+    result = signin(email, password)
+    return {"message": result}
+@app.post("/api/signup")
+async def register_user(name: str, email: str, password: str):
+    result = signup(name, email, password)
+    return {"message": result}
 
 
 # ============================================================
@@ -331,7 +360,11 @@ async def chat(body: ChatIn):
     try:
 
         recorder = app.state.recorder
-        cacheable = is_self_contained(body.message)
+        allowed, message = await check_input(body.message)
+        if not allowed:
+            return {"type": "message", "content": message}
+
+        cacheable = is_self_contained(message)
 
         if cacheable:
             try:

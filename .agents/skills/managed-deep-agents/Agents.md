@@ -1,32 +1,9 @@
 # Agent memory
 
 ## Older sessions (condensed)
-On October 13, 2026, the user inquired about the AuraPhone 15, which is priced at $799.00, with 150 units available in stock. The user also sought information on AuraTech branch locations, and the support agent advised checking the official website for details. AuraTech operates 23 branches across Jordan, Syria, Saudi Arabia, and France. The session concluded without any unresolved issues, and the conversation was conducted in English.
+On October 13, 2026, the user inquired about the AuraPhone 15, priced at $799.00, with 150 units in stock. They also sought information on AuraTech branch locations, which total 23 across Jordan, Syria, Saudi Arabia, and France, and were directed to the official website for details. Additionally, the user asked about returning used AuraBuds Series earbuds, and it was clarified that opened in-ear headphones cannot be returned unless defective due to hygiene standards. The session was conducted in English, and all questions were addressed, leaving no unresolved issues.
 
 ## Recent sessions
-
-### 2026-10-13 16:28
-- **User's Language**: English
-- **Topics Asked**: Price of Aura Phone 15, locations of AuraTech branches, stock availability
-- **Products Discussed**: Aura Phone 15
-- **Decisions Made**: None
-- **Unresolved Issues**: User requested specific branch locations, which could not be provided; directed to the official website instead.
-- **Stock Information**: 150 units of Aura Phone 15 available at $799.00.
-
-### 2026-10-13 16:40
-- User inquired about the price of the Aura Phone 15.
-- Aura Phone 15 is priced at $799.00, with 150 units in stock.
-- User asked about returning used and opened AuraBuds Series earbuds.
-- Return policy clarified: used in-ear headphones cannot be returned unless defective.
-- User's language: English.
-- No unresolved issues; all questions were addressed.
-
-### 2026-10-13 16:41
-- **User Inquiry**: Asked about returning opened used earbuds.
-- **Product Discussed**: AuraBuds Series (in-ear headphones).
-- **Decision Made**: Opened and used earbuds cannot be returned due to hygiene standards, unless defective.
-- **Unresolved Issues**: None noted; user received clear information on return policy.
-- **User's Language**: English.
 
 ### 2026-10-13 16:41
 - User inquired about the price of the Aura Phone 15.
@@ -84,3 +61,30 @@ On October 13, 2026, the user inquired about the AuraPhone 15, which is priced a
 - User repeated questions about countries and phone cost multiple times.
 - No unresolved issues noted.
 - User's language: English.
+
+### 2026-10-15 11:58
+- **User Inquiry**: Price of Aura Phone 15 and comparison of Aura Buds Pro with Aura Buds.
+- **Products Discussed**: 
+  - Aura Phone 15: $799.00, 150 units in stock.
+  - Aura Buds Pro: $179.99, 280 units in stock, features active noise cancellation, 30 hours battery life, wireless charging.
+  - Aura Buds Standard: $129.99, 450 units in stock, features active noise cancellation, 24 hours battery life.
+- **Decisions Made**: User received detailed product comparisons and pricing.
+- **Unresolved Issues**: None noted.
+- **User's Language**: English.
+
+### 2026-10-15 12:04
+- User inquired about return requests.
+- Discussed a defective Aura Phone 15.
+- User wants to initiate a return request.
+- Support agent requested customer ID and reason for return.
+- No resolution provided; user did not supply requested information.
+- Language used: English.
+
+### 2026-10-15 12:09
+- User requested a return for a broken product.
+- Customer ID provided: C008.
+- Return request recorded but no orders found for C008.
+- User inquired about orders for customer ID C003.
+- C003 has one order (Product ID: P01, Quantity: 1) currently processing.
+- No unresolved issues for C003, but C008's return request is unclear due to no associated orders.
+- Language used: English.
