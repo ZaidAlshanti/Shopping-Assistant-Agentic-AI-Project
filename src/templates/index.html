@@ -56,6 +56,8 @@
 
     <h1>AuraTech Shopping Assistant</h1>
 
+    <p id="account"></p>
+
     <div id="chat"></div>
 
     <!-- Chat input -->
@@ -113,6 +115,27 @@
     sessionId = crypto.randomUUID();
     sessionStorage.setItem("sid", sessionId);
         }
+
+    (async function showAccount() {
+    const res = await fetch("/api/me?session_id=" + sessionId);
+    const data = await res.json();
+    const box = document.getElementById("account");
+    if (data.name) {
+        box.innerHTML = "";
+        box.append("Signed in as " + data.name + " · ");
+        const a = document.createElement("a");
+        a.href = "#";
+        a.textContent = "Log out";
+        a.onclick = async (e) => {
+            e.preventDefault();
+            await fetch("/api/logout?session_id=" + sessionId, { method: "POST" });
+            location.reload();
+        };
+        box.append(a);
+    } else {
+        box.innerHTML = 'Guest · <a href="/login">Log in or sign up</a>';
+    }
+})();
 
 
     // ============================================================

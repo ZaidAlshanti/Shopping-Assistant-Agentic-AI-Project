@@ -33,6 +33,7 @@ from src.RAG.upload import handle_file_upload, ingest_text
 from src.RAG.session_memory import SessionRecorder
 from src.RAG.cache.semantic_cache import SemanticCache
 from login import signin, signup
+from Access import current_customer, secure_tools
 from src.RAG.safety import check_input, check_output
 
 
@@ -89,7 +90,7 @@ async def lifespan(app: FastAPI):
 
         await session.initialize()
 
-        tools = await load_mcp_tools(session)
+        tools = secure_tools(await load_mcp_tools(session))
 
         app.state.tools = tools
         app.state.tools_by_name = {
@@ -103,6 +104,7 @@ async def lifespan(app: FastAPI):
         )
         app.state.cache = SemanticCache()
         app.state.threads = {}      # session_id -> current thread_id
+        app.state.customers = {}    # session_id -> {"id", "name"} of the logged-in customer
 
         # session_id -> number of pending approval actions
         app.state.pending = {}
@@ -163,7 +165,6 @@ IGNORED_TOOLS = {"set_returns", "write_reports"}
 CACHEABLE_TOOLS = {
     "search_knowledge_base",
     "get_stock_and_compatible_lookup",
-    "get_order_status",
     "record_response",
 }
 
@@ -315,39 +316,169 @@ async def run_agent(
     }
 
 
+
 # ============================================================
-# Main page
+# Authentication request models
 # ============================================================
+
+class SigninIn(BaseModel):
+    session_id: str
+    email: str
+    password: str
+
+
+class SignupIn(BaseModel):
+    session_id: str
+    name: str
+    email: str
+    password: str
+
+
+# ============================================================
+# Serve login.js from src/templates/
+# ============================================================
+
 @app.get("/login.js")
 async def get_login_js():
     return FileResponse(
         os.path.join(TEMPLATES_DIR, "login.js"),
         media_type="application/javascript"
     )
+
+
+# ============================================================
+# Main pages
+# ============================================================
+
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
     return templates.TemplateResponse(
         request=request,
-        name="login.html",
+        name="index.html"
     )
-def read_root(request: Request):
 
+
+@app.get("/login", response_class=HTMLResponse)
+def login_page(request: Request):
     return templates.TemplateResponse(
         request=request,
-        name=["index.html", "login.html"],
+        name="login.html"
     )
 
+
 # ============================================================
-# login and signup
+# Customer session helpers
 # ============================================================
+
+def start_session(session_id: str, customer: dict):
+    app.state.customers[session_id] = customer
+
+    # Start a fresh conversation for this authenticated customer.
+    app.state.threads[session_id] = (
+        f"{session_id}-{uuid.uuid4().hex[:8]}"
+    )
+
+
+def bind_customer(session_id: str):
+    """Bind the logged-in customer to the current request."""
+    customer = app.state.customers.get(session_id)
+    current_customer.set(customer["id"] if customer else None)
+
+
+# ============================================================
+# Login endpoint
+# ============================================================
+
 @app.post("/api/signin")
-async def login_user(email: str, password: str):
-    result = signin(email, password)
-    return {"message": result}
+async def login_user(body: SigninIn):
+    customer, message = await asyncio.to_thread(
+        signin,
+        body.email,
+        body.password
+    )
+
+    if not customer:
+        return JSONResponse(
+            {"ok": False, "message": message},
+            status_code=401
+        )
+
+    start_session(body.session_id, customer)
+
+    return {
+        "ok": True,
+        "message": message,
+        "name": customer["name"]
+    }
+
+
+# ============================================================
+# Signup endpoint
+# ============================================================
+
 @app.post("/api/signup")
-async def register_user(name: str, email: str, password: str):
-    result = signup(name, email, password)
-    return {"message": result}
+async def register_user(body: SignupIn):
+    customer, message = await asyncio.to_thread(
+        signup,
+        body.name,
+        body.email,
+        body.password
+    )
+
+    if not customer:
+        return JSONResponse(
+            {"ok": False, "message": message},
+            status_code=400
+        )
+
+    start_session(body.session_id, customer)
+
+    return {
+        "ok": True,
+        "message": message,
+        "name": customer["name"]
+    }
+
+
+# ============================================================
+# Current customer endpoint
+# ============================================================
+
+@app.get("/api/me")
+async def me(session_id: str):
+    customer = app.state.customers.get(session_id)
+
+    return {
+        "name": customer["name"] if customer else None
+    }
+
+
+# ============================================================
+# Logout endpoint
+# ============================================================
+
+@app.post("/api/logout")
+async def logout(session_id: str):
+    app.state.customers.pop(session_id, None)
+
+    app.state.threads[session_id] = (
+        f"{session_id}-{uuid.uuid4().hex[:8]}"
+    )
+
+    return {"ok": True}
+
+
+@app.get("/api/me")
+async def me(session_id: str):
+    customer = app.state.customers.get(session_id)
+    return {"name": customer["name"] if customer else None}
+
+
+@app.post("/api/logout")
+async def logout(session_id: str):
+    app.state.customers.pop(session_id, None)
+    app.state.threads[session_id] = f"{session_id}-{uuid.uuid4().hex[:8]}"
+    return {"ok": True}
 
 
 # ============================================================
@@ -415,6 +546,8 @@ async def chat(body: ChatIn):
                 )
             ]
         }
+
+        bind_customer(body.session_id)
 
         return await run_agent(
             app,
@@ -490,6 +623,8 @@ async def decision(body: DecisionIn):
         )
 
     try:
+
+        # bind_customer(body.session_id)
 
         return await run_agent(
             app,

@@ -1,0 +1,36 @@
+{
+    "orders": [
+        {
+            "customer_id": "C004",
+            "items": [
+                "AuraPhone 15",
+                "AuraPhone 15"
+            ],
+            "status": "Pending"
+        },
+        {
+            "customer_id": "C004",
+            "items": [
+                "AuraBuds Pro",
+                "AuraPhone 15",
+                "AuraPhone 15"
+            ],
+            "status": "Pending"
+        },
+        {
+            "customer_id": "C004",
+            "items": [
+                "AuraBuds Pro"
+            ],
+            "status": "Pending"
+        },
+        {
+            "customer_id": "C004",
+            "items": [
+                "AuraBuds Pro",
+                "AuraBuds Pro"
+            ],
+            "status": "Pending"
+        }
+    ]
+}

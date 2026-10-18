@@ -1,5 +1,26 @@
 [
-    {"id": "C001", "name": "Ali Eyad", "email": "ali.eyad@example.com"},
-    {"id": "C002", "name": "Sarah Ahmed", "email": "sarah.ahmed@example.com"},
-    {"id": "C003", "name": "John Smith", "email": "john.smith@example.com"}
+    {
+        "id": "C001",
+        "name": "Ali Eyad",
+        "email": "ali.eyad@example.com",
+        "password_hash": "d3886a05faad435fa1e57f7af58fd913$6440d0543f262f0584eacedb8dfaac8e4d8c2fb2155aa10658bf9a1c80d80676"
+    },
+    {
+        "id": "C002",
+        "name": "Sarah Ahmed",
+        "email": "sarah.ahmed@example.com",
+        "password": "2"
+    },
+    {
+        "id": "C003",
+        "name": "John Smith",
+        "email": "john.smith@example.com",
+        "password": "3"
+    },
+    {
+        "id": "C004",
+        "name": "Zaid",
+        "email": "zaid@email.com",
+        "password_hash": "f2da2d0330f876130ad7a6692c756f51$630cfd2a3fb2f51e0476a0eec8ffddc7f8476e82860483c14674f1bfad3211aa"
+    }
 ]

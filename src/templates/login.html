@@ -1,286 +1,411 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
- <meta charset="utf-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AuraTech Shopping Assistant - Login</title>
+
     <style>
-        @import url(
-"https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+        @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Poppins", sans-serif;
-}
-body {
-    height: 100vh;
-    width: 100vw;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 30px;
-    background-color: rgb(231, 231, 231);
-}
-header {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-.heading {
-    color: green;
-}
-.title {
-    font-weight: 400;
-    letter-spacing: 1.5px;
-}
-.container {
-    height: 600px;
-    width: 500px;
-    background-color: white;
-    box-shadow: 8px 8px 20px rgb(128, 128, 128);
-    position: relative;
-    overflow: hidden;
-}
-.btn {
-    height: 60px;
-    width: 300px;
-    margin: 20px auto;
-    box-shadow: 10px 10px 30px rgb(254, 215, 188);
-    border-radius: 50px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-}
-.login,
-.signup {
-    font-size: 22px;
-    border: none;
-    outline: none;
-    background-color: transparent;
-    position: relative;
-    cursor: pointer;
-}
-.slider {
-    height: 60px;
-    width: 150px;
-    border-radius: 50px;
-    background-image: linear-gradient(to right,
-            rgb(255, 195, 110),
-            rgb(255, 146, 91));
-    position: absolute;
-    top: 20px;
-    left: 100px;
-    transition: all 0.5s ease-in-out;
-}
-.moveslider {
-    left: 250px;
-}
-.form-section {
-    height: 500px;
-    width: 1000px;
-    padding: 20px 0;
-    display: flex;
-    position: relative;
-    transition: all 0.5s ease-in-out;
-    left: 0px;
-}
-.form-section-move {
-    left: -500px;
-}
-.login-box,
-.signup-box {
-    height: 100%;
-    width: 500px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 0px 40px;
-}
-.login-box {
-    gap: 50px;
-}
-.signup-box {
-    gap: 30px;
-}
-.ele {
-    height: 60px;
-    width: 400px;
-    outline: none;
-    border: none;
-    color: rgb(77, 77, 77);
-    background-color: rgb(240, 240, 240);
-    border-radius: 50px;
-    padding-left: 30px;
-    font-size: 18px;
-}
-.clkbtn {
-    height: 60px;
-    width: 150px;
-    border-radius: 50px;
-    background-image: linear-gradient(to right,
-            rgb(255, 195, 110),
-            rgb(255, 146, 91));
-    font-size: 22px;
-    border: none;
-    cursor: pointer;
-}
-/* For Responsiveness of the page */
-@media screen and (max-width: 650px) {
-    .container {
-        height: 600px;
-        width: 300px;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Poppins", sans-serif;
+        }
 
-    .title {
-        font-size: 15px;
-    }
+        body {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            gap: 24px;
+            padding: 24px 12px;
+            background-color: rgb(231, 231, 231);
+        }
 
-    .btn {
-        height: 50px;
-        width: 200px;
-        margin: 20px auto;
-    }
-    .login,
-    .signup {
-        font-size: 19px;
-    }
-    .slider {
-        height: 50px;
-        width: 100px;
-        left: 50px;
-    }
-    .moveslider {
-        left: 150px;
-    }
-    .form-section {
-        height: 500px;
-        width: 600px;
-    }
-    .form-section-move {
-        left: -300px;
-    }
-    .login-box,
-    .signup-box {
-        height: 100%;
-        width: 300px;
-    }
-    .ele {
-        height: 50px;
-        width: 250px;
-        font-size: 15px;
-    }
-    .clkbtn {
-        height: 50px;
-        width: 130px;
-        font-size: 19px;
-    }
-}
-@media screen and (max-width: 320px) {
-    .container {
-        height: 600px;
-        width: 250px;
-    }
-    .heading {
-        font-size: 30px;
-    }
-    .title {
-        font-size: 10px;
-    }
-    .btn {
-        height: 50px;
-        width: 200px;
-        margin: 20px auto;
-    }
-    .login,
-    .signup {
-        font-size: 19px;
-    }
-    .slider {
-        height: 50px;
-        width: 100px;
-        left: 27px;
-    }
-    .moveslider {
-        left: 127px;
-    }
-    .form-section {
-        height: 500px;
-        width: 500px;
-    }
-    .form-section-move {
-        left: -250px;
-    }
+        header {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-align: center;
+        }
 
-    .login-box,
-    .signup-box {
-        height: 100%;
-        width: 250px;
-    }
+        .heading {
+            color: green;
+            font-size: 32px;
+        }
 
-    .ele {
-        height: 50px;
-        width: 220px;
-        font-size: 15px;
-    }
+        .title {
+            font-weight: 400;
+            letter-spacing: 1.5px;
+            font-size: 16px;
+        }
 
-    .clkbtn {
-        height: 50px;
-        width: 130px;
-        font-size: 19px;
-    }
-}
+        .container {
+            height: 600px;
+            width: 500px;
+            max-width: 100%;
+            background-color: white;
+            box-shadow: 8px 8px 20px rgb(128, 128, 128);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn {
+            height: 60px;
+            width: 300px;
+            max-width: calc(100% - 32px);
+            margin: 20px auto;
+            box-shadow: 10px 10px 30px rgb(254, 215, 188);
+            border-radius: 50px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .login,
+        .signup {
+            font-size: 22px;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            position: relative;
+            cursor: pointer;
+            z-index: 2;
+            flex: 1;
+        }
+
+        .slider {
+            height: 60px;
+            width: 150px;
+            max-width: 30%;
+            border-radius: 50px;
+            background-image: linear-gradient(
+                to right,
+                rgb(255, 195, 110),
+                rgb(255, 146, 91)
+            );
+            position: absolute;
+            top: 20px;
+            left: calc(50% - 150px);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .moveslider {
+            left: calc(50% + 0px);
+        }
+
+        .form-section {
+            height: 500px;
+            width: 1000px;
+            padding: 20px 0;
+            display: flex;
+            position: relative;
+            left: 0;
+            transition: left 0.5s ease-in-out;
+        }
+
+        .form-section-move {
+            left: -500px;
+        }
+
+        .login-box,
+        .signup-box {
+            height: 100%;
+            width: 500px;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 0 40px;
+        }
+
+        .login-box {
+            gap: 40px;
+        }
+
+        .signup-box {
+            gap: 20px;
+        }
+
+        .ele {
+            height: 60px;
+            width: 100%;
+            max-width: 400px;
+            flex-shrink: 0;
+            outline: none;
+            border: none;
+            color: rgb(77, 77, 77);
+            background-color: rgb(240, 240, 240);
+            border-radius: 50px;
+            padding: 0 24px;
+            font-size: 16px;
+        }
+
+        .ele:focus {
+            outline: 2px solid rgb(255, 146, 91);
+            outline-offset: 2px;
+        }
+
+        .clkbtn {
+            min-height: 55px;
+            width: 150px;
+            flex-shrink: 0;
+            border-radius: 50px;
+            background-image: linear-gradient(
+                to right,
+                rgb(255, 195, 110),
+                rgb(255, 146, 91)
+            );
+            font-size: 20px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .clkbtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #auth-msg {
+            width: min(500px, 100%);
+            min-height: 24px;
+            padding: 0 12px;
+            text-align: center;
+            overflow-wrap: anywhere;
+        }
+
+        .back-link {
+            text-align: center;
+            font-size: 14px;
+        }
+
+        @media screen and (max-width: 650px) {
+            .heading {
+                font-size: 26px;
+            }
+
+            .title {
+                font-size: 13px;
+            }
+
+            .container {
+                width: 300px;
+            }
+
+            .slider {
+                width: 100px;
+                max-width: none;
+                left: 50px;
+                height: 50px;
+            }
+
+            .moveslider {
+                left: 150px;
+            }
+
+            .btn {
+                height: 50px;
+                width: 200px;
+            }
+
+            .login,
+            .signup {
+                font-size: 19px;
+            }
+
+            .form-section {
+                width: 600px;
+            }
+
+            .form-section-move {
+                left: -300px;
+            }
+
+            .login-box,
+            .signup-box {
+                width: 300px;
+                padding: 0 24px;
+            }
+
+            .ele {
+                height: 50px;
+                font-size: 14px;
+                padding: 0 18px;
+            }
+
+            .clkbtn {
+                min-height: 50px;
+                width: 130px;
+                font-size: 18px;
+            }
+
+            .login-box {
+                gap: 35px;
+            }
+
+            .signup-box {
+                gap: 18px;
+            }
+        }
+
+        @media screen and (max-width: 320px) {
+            .heading {
+                font-size: 23px;
+            }
+
+            .container {
+                width: 250px;
+            }
+
+            .slider {
+                left: 25px;
+            }
+
+            .moveslider {
+                left: 125px;
+            }
+
+            .form-section {
+                width: 500px;
+            }
+
+            .form-section-move {
+                left: -250px;
+            }
+
+            .login-box,
+            .signup-box {
+                width: 250px;
+                padding: 0 15px;
+            }
+
+            .ele {
+                font-size: 13px;
+            }
+        }
     </style>
 </head>
+
 <body>
     <header>
         <h1 class="heading">AuraTech Shopping Assistant</h1>
-        <h3 class="title">Sliding Login & Registration Form</h3>
+        <h3 class="title">Sliding Login &amp; Registration Form</h3>
     </header>
-    <!-- container div -->
+
     <div class="container">
-        <!-- upper button section to select
-             the login or signup form -->
         <div class="slider"></div>
+
         <div class="btn">
-            <button class="login">Login</button>
-            <button class="signup">Signup</button>
+            <button type="button" class="login">Login</button>
+            <button type="button" class="signup">Signup</button>
         </div>
-        <!-- Form section that contains the
-             login and the signup form -->
+
         <div class="form-section">
 
-            <!-- login form -->
+            <!-- Login form -->
             <div class="login-box">
-                <input type="email" 
-                       class="email ele" 
-                       placeholder="youremail@email.com">
-                <input type="password"
-                       class="password ele" 
-                       placeholder="password">
-                <button class="clkbtn">Login</button>
+                <input
+                    id="login-email"
+                    type="email"
+                    class="email ele"
+                    placeholder="youremail@email.com"
+                    autocomplete="email"
+                    aria-label="Login email"
+                    required
+                >
+
+                <input
+                    id="login-password"
+                    type="password"
+                    class="password ele"
+                    placeholder="Password"
+                    autocomplete="current-password"
+                    aria-label="Login password"
+                    required
+                >
+
+                <button
+                    id="login-btn"
+                    type="button"
+                    class="clkbtn"
+                >
+                    Login
+                </button>
             </div>
-            <!-- signup form -->
+
+            <!-- Signup form -->
             <div class="signup-box">
-                <input type="text" 
-                       class="name ele" 
-                       placeholder="Enter your name">
-                <input type="email" 
-                       class="email ele" 
-                       placeholder="youremail@email.com">
-                <input type="password" 
-                       class="password ele" 
-                       placeholder="password">
-                <input type="password" 
-                       class="password ele" 
-                       placeholder="Confirm password">
-                <button class="clkbtn">Signup</button>
+                <input
+                    id="signup-name"
+                    type="text"
+                    class="name ele"
+                    placeholder="Enter your name"
+                    autocomplete="name"
+                    aria-label="Full name"
+                    required
+                >
+
+                <input
+                    id="signup-email"
+                    type="email"
+                    class="email ele"
+                    placeholder="youremail@email.com"
+                    autocomplete="email"
+                    aria-label="Signup email"
+                    required
+                >
+
+                <input
+                    id="signup-password"
+                    type="password"
+                    class="password ele"
+                    placeholder="Password"
+                    autocomplete="new-password"
+                    aria-label="Signup password"
+                    required
+                >
+
+                <input
+                    id="signup-confirm"
+                    type="password"
+                    class="password ele"
+                    placeholder="Confirm password"
+                    autocomplete="new-password"
+                    aria-label="Confirm password"
+                    required
+                >
+
+                <button
+                    id="signup-btn"
+                    type="button"
+                    class="clkbtn"
+                >
+                    Signup
+                </button>
             </div>
+
         </div>
     </div>
-    <script src="login.js"></script>
+
+    <p id="auth-msg" role="status" aria-live="polite"></p>
+
+    <p class="back-link">
+        <a href="/">Return to Shopping Assistant</a>
+    </p>
+
+    <!-- Served by the existing FastAPI /login.js route -->
+    <script src="/login.js" defer></script>
 </body>
+</html>

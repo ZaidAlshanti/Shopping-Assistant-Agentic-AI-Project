@@ -44,9 +44,110 @@ qdrant_client = QdrantClient(url="http://localhost:6333")
 
 
 # ============================================================
-# Product catalogue
+# Create orders
 # ============================================================
+@mcp.tool()
+def create_order(
+    customer_id: str,
+    items: list[str],
+) -> str:
+    """
+    Create a new order for a customer.
+    """
 
+    customer_id = (
+        customer_id
+        .strip()
+        .strip("\"'")
+        .upper()
+    )
+
+    if not items:
+        return "Please provide at least one item for the order."
+
+    order = {
+        "customer_id": customer_id,
+        "items": items,
+        "status": "Pending",
+    }
+
+    orders_dir = os.path.join(
+        os.path.dirname(__file__),
+        "orders",
+    )
+
+    try:
+            with get_pg_connection() as conn:
+                with conn.cursor(
+                    cursor_factory=psycopg2.extras.RealDictCursor
+                ) as cur:
+                    for product_name in items:
+                            # Case-insensitive exact match first
+                           # 1. Removed the trailing comma after 'stock - 1'
+                        cur.execute(
+                            """ 
+                            UPDATE prods 
+                            SET stock = stock - 1 
+                            WHERE product_name = %s; 
+                            """, 
+                            (product_name,)
+                        )
+                        conn.commit()
+
+# 2. Use rowcount to see how many items were updated (Do not use fetchall)
+                        updated_rows = cur.rowcount
+            
+                    if not updated_rows:
+                        return f"No product found matching '{product_name}'."
+                           
+                            
+            
+    except psycopg2.Error as e:
+                    print(
+                        f"PostgreSQL lookup failed: {e}",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+                    return f"Product lookup failed: {e}"
+            
+    
+    os.makedirs(
+        orders_dir,
+        exist_ok=True,
+    )
+
+    orders_path = os.path.join(
+        orders_dir,
+        "Orders.json",
+    )
+
+    try:
+        if os.path.exists(orders_path):
+            with open(
+                orders_path,
+                "r",
+                encoding="utf-8",
+            ) as f:
+                orders_data = json.load(f)
+        else:
+            orders_data = {"orders": []}
+
+        orders_data["orders"].append(order)
+
+        with open(
+            orders_path,
+            "w",
+            encoding="utf-8",
+        ) as f:
+            json.dump(orders_data, f, indent=4)
+
+    except Exception as e:
+        return f"Failed to create order: {e}"
+
+    return (
+        f"Order created successfully for "
+        f"Customer ID {customer_id}."
+    )
 
 
 # ============================================================
@@ -167,7 +268,7 @@ def get_order_status(
     try:
 
         with open(
-            "Data\\Orders.json",
+            "src\\RAG\\orders\\Orders.json",
             "r",
             encoding="utf-8",
         ) as f:
