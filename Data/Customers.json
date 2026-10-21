@@ -9,7 +9,7 @@
         "id": "C002",
         "name": "Sarah Ahmed",
         "email": "sarah.ahmed@example.com",
-        "password": "2"
+        "password_hash": "f5b95bfb83c153f448c60b7b4be40835$e7154f58baf80121347b38e303ea5ca924ed0c23c5d013f0404b7db814669d16"
     },
     {
         "id": "C003",

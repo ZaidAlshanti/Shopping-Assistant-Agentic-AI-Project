@@ -31,6 +31,15 @@
                 "AuraBuds Pro"
             ],
             "status": "Pending"
+        },
+        {
+            "customer_id": "C002",
+            "items": [
+                "AuraBuds Standard",
+                "AuraBuds Standard",
+                "AuraBuds Standard"
+            ],
+            "status": "Pending"
         }
     ]
 }

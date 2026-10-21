@@ -1,37 +1,9 @@
 # Agent memory
 
 ## Older sessions (condensed)
-On October 13 and 15, 2026, the user inquired about the AuraPhone 15, priced at $799.00, and compared the Aura Buds Pro ($179.99) with the Aura Buds Standard ($129.99), both featuring active noise cancellation. They learned that AuraTech has 23 branches across Jordan, Syria, Saudi Arabia, and France, and were directed to the official website for more information. The return policy for opened AuraBuds allows returns only for defective items. The user attempted to initiate a return for a defective AuraPhone 15 but initially lacked the necessary customer ID and reason. After providing customer ID C008, no orders were found, while C003 had one order processing without issues. On October 18, the user confirmed an order for two Aura Buds Pro but was informed they must place orders via the website or physical locations, leaving their request for direct order creation unresolved. All inquiries were conducted in English.
+Between October 13 and 18, 2026, the user inquired about the AuraPhone 15, priced at $799.00, and compared the Aura Buds Pro ($179.99) with the Aura Buds Standard ($129.99), both featuring active noise cancellation. They learned that AuraTech operates 23 branches across Jordan, Syria, Saudi Arabia, and France, and were directed to the official website for further information. The return policy for opened AuraBuds allows returns only for defective items. The user attempted to return a defective AuraPhone 15 but faced issues due to a missing customer ID. After providing ID C008, no orders were found, while C003 had one order processing. On October 18, the user confirmed an order for two Aura Buds Pro but was informed they must place orders through the website or physical locations, leaving their request for direct order creation unresolved. All inquiries were conducted in English.
 
 ## Recent sessions
-
-### 2026-10-18 20:11
-- User requested to set a new order.
-- Products discussed: AuraPhone 15.
-- User specified wanting two units of AuraPhone 15.
-- Support agent could not find the product in the catalogue.
-- User confirmed the product name as AuraPhone 15.
-- Agent informed user they cannot create orders directly.
-- User advised to place the order through the website or physical locations.
-- No unresolved issues; user received guidance on ordering.
-- Language: English.
-
-### 2026-10-18 20:22
-- User requested to create an order.
-- Products discussed: AuraPhone 15.
-- Decision made: User needs to log in to their account to proceed with the order.
-- Unresolved: Order not placed due to user not being logged in.
-- User's language: English.
-
-### 2026-10-18 20:25
-- User wants to create an order.
-- Products discussed: AuraPhone 15.
-- User requested two units of AuraPhone 15.
-- Issue encountered while creating the order.
-- Price confirmed: $799.00 per unit, with 150 units in stock.
-- User asked if they should try creating the order again.
-- Unresolved issue: Order creation not completed.
-- User's language: English.
 
 ### 2026-10-18 20:30
 - User requested to create an order for AuraPhone 15.
@@ -99,3 +71,28 @@ On October 13 and 15, 2026, the user inquired about the AuraPhone 15, priced at 
 - All orders are currently pending.
 - User did not request further assistance or resolution.
 - Language used: English.
+
+### 2026-10-21 13:47
+- User inquired about shipping fees.
+- Discussed shipping options for AuraTech products.
+- Provided details on:
+  - Standard Shipping: $5.99 (Free over $50), 3–5 business days.
+  - Express Shipping: $14.99, 1–2 business days.
+  - International Shipping: $25.00, 7–14 business days.
+- Mentioned potential delivery delays and customs responsibilities for international shipments.
+- No unresolved issues noted.
+- User's language: English.
+
+### 2026-10-21 13:47
+- **User's Language:** English
+- **Topics Asked:** Order status, product availability
+- **Products Discussed:** AuraPhone 15, AuraBuds Pro
+- **Decisions Made:** User confirmed orders and inquired about product availability
+- **Unresolved Issues:** None noted; user did not request further assistance after receiving information.
+
+### 2026-10-21 14:02
+- **User's Request**: Create an order.
+- **Products Discussed**: AuraPhone 15, AuraBuds Pro, AuraBuds Standard.
+- **Decisions Made**: User ordered three AuraBuds Standard.
+- **Unresolved Issues**: User requested a complete product list but only received partial information.
+- **User's Language**: English.
