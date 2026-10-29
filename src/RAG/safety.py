@@ -40,18 +40,42 @@ async def check_input(text: str) -> tuple[bool, str]:
     return True, result.content or text
 
 
+
 async def check_output(text: str) -> tuple[bool, str]:
     """
-    Run the output rails on the agent's final answer.
-    Returns (allowed, text). If blocked, text is the refusal to show the user instead.
+    Run output rails and log their result for diagnosis.
     """
-    result = await rails.check_async(
-        [{"role": "assistant", "content": text}],
-        rail_types=[RailType.OUTPUT],
-    )
-    if result.status == RailStatus.BLOCKED:
-        return False, result.content
-    return True, result.content or text
+    try:
+        result = await rails.check_async(
+            [{"role": "assistant", "content": text}],
+            rail_types=[RailType.OUTPUT],
+        )
+
+        print(
+            f"[GUARDRAILS OUTPUT] "
+            f"status={result.status!r}"
+        )
+        print(
+            f"[GUARDRAILS OUTPUT] "
+            f"returned_content={result.content!r}"
+        )
+        print(
+            f"[GUARDRAILS OUTPUT] "
+            f"original_content={text!r}"
+        )
+
+        if result.status == RailStatus.BLOCKED:
+            print("[GUARDRAILS OUTPUT] RESPONSE BLOCKED")
+            return False, result.content or (
+                "The response was blocked by the safety checks."
+            )
+
+        return True, result.content or text
+
+    except Exception as e:
+        print(f"[GUARDRAILS OUTPUT ERROR] {type(e).__name__}: {e}")
+        raise
+
 
 
 if __name__ == "__main__":

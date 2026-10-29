@@ -37,9 +37,9 @@ def build_agent(tools,checkpointer):
                     "summary": "auto",  # 'detailed', 'auto', or None
                 }
                 model = ChatOpenAI(
-                                model="gpt-4o-mini",
-                                temperature=0.2,
-                                # reasoning = reasoning,
+                                model="gpt-6-luna",
+                                # temperature=0.2,
+                                reasoning = reasoning,
                             )
                 # model = ChatOllama(
                 #                 model="qwen3.5:4b",

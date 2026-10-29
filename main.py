@@ -254,7 +254,33 @@ async def run_agent(
     # Normal final response
     # --------------------------------------------------------
 
-    final = result["messages"][-1].content
+    
+    def extract_text_content(content) -> str:
+        """Convert an agent message's content into readable plain text."""
+        if isinstance(content, str):
+            return content
+
+        if isinstance(content, list):
+            parts = []
+
+            for block in content:
+                if isinstance(block, str):
+                    parts.append(block)
+                elif isinstance(block, dict):
+                    if block.get("type") == "text":
+                        text = block.get("text")
+                        if isinstance(text, str):
+                            parts.append(text)
+
+            return "\n".join(parts).strip()
+
+        return str(content)
+
+
+# Inside run_agent(), after handling interrupts:
+    last_message = result["messages"][-1]
+    final = extract_text_content(last_message.content)
+
 
     last_user = next(
         (

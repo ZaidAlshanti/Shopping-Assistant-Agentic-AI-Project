@@ -1,26 +1,9 @@
 # Agent memory
 
 ## Older sessions (condensed)
-Between October 13 and 18, 2026, the user inquired about the AuraPhone 15, priced at $799.00, and compared the Aura Buds Pro ($179.99) with the Aura Buds Standard ($129.99), both featuring active noise cancellation. They learned that AuraTech operates 23 branches across Jordan, Syria, Saudi Arabia, and France, and were directed to the official website for further information. The return policy for opened AuraBuds allows returns only for defective items. The user attempted to return a defective AuraPhone 15 but faced issues due to a missing customer ID. After providing ID C008, no orders were found, while C003 had one order processing. On October 18, the user confirmed an order for two Aura Buds Pro but was informed they must place orders through the website or physical locations, leaving their request for direct order creation unresolved. All inquiries were conducted in English.
+Between October 13 and 18, 2026, the user inquired about the AuraPhone 15, priced at $799.00, and compared the Aura Buds Pro ($179.99) with the Aura Buds Standard ($129.99), both featuring active noise cancellation. They learned that AuraTech operates 23 branches across Jordan, Syria, Saudi Arabia, and France, and were directed to the official website for further information. The return policy for opened AuraBuds allows returns only for defective items. The user faced issues returning a defective AuraPhone 15 due to a missing customer ID, ultimately providing ID C008, which yielded no orders found, while C003 had one order processing. On October 18, the user confirmed an order for two Aura Buds Pro but was informed they must place orders through the website or physical locations, leaving their request for direct order creation unresolved. All inquiries were conducted in English and Arabic.
 
 ## Recent sessions
-
-### 2026-10-18 20:30
-- User requested to create an order for AuraPhone 15.
-- Discussed products: AuraPhone 15, priced at $799.00, with 150 units in stock.
-- User provided two customer IDs (C005 and C009) but faced login issues.
-- Decision made: User advised to place the order through the website or physical locations.
-- Unresolved: User could not complete the order due to login issues.
-- User's language: English.
-
-### 2026-10-18 20:35
-- User requested to create an order.
-- Products discussed: AuraPhone 15.
-- User provided customer ID (C009) and requested two units of AuraPhone 15.
-- Issue encountered while creating the order; user advised to place the order online or in-store.
-- Price of AuraPhone 15 confirmed as $799.00, with 150 units in stock.
-- No resolution for order creation; user may need to try again.
-- User communicated in both Arabic and English.
 
 ### 2026-10-18 20:45
 - User requested to create multiple orders.
@@ -96,3 +79,18 @@ Between October 13 and 18, 2026, the user inquired about the AuraPhone 15, price
 - **Decisions Made**: User ordered three AuraBuds Standard.
 - **Unresolved Issues**: User requested a complete product list but only received partial information.
 - **User's Language**: English.
+
+### 2026-10-26 12:33
+- User inquired about stock availability of AuraPhone 15.
+- Support confirmed 146 units available at $799.00 each.
+- User asked about customer information, which was not provided.
+- No decisions made or unresolved issues noted.
+- Language used: English.
+
+### 2026-10-29 12:33
+- User inquired about stock availability.
+- Discussed **AuraPhone 15**.
+- Confirmed **146 units** available.
+- User initiated conversation with a greeting.
+- No unresolved issues noted.
+- Language used: **English**.
