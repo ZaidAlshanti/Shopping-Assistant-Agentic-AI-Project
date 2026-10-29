@@ -16,3 +16,4 @@ qdrant_local/
 src/RAG/Evaluation/Responses.txt
 src/RAG/ReturnRequests/Returns.txt
 .agents/query_cache.json
+.agents/skills/managed-deep-agents/Agents.md
