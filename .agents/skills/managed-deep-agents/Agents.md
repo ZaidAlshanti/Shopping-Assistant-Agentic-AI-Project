@@ -1,23 +1,9 @@
 # Agent memory
 
 ## Older sessions (condensed)
-Between October 13 and 18, 2026, the user inquired about the AuraPhone 15, priced at $799.00, and compared the Aura Buds Pro ($179.99) with the Aura Buds Standard ($129.99), both featuring active noise cancellation. They learned that AuraTech operates 23 branches across Jordan, Syria, Saudi Arabia, and France, and were directed to the official website for further information. The return policy for opened AuraBuds allows returns only for defective items. The user faced issues returning a defective AuraPhone 15 due to a missing customer ID, ultimately providing ID C008, which yielded no orders found, while C003 had one order processing. On October 18, the user confirmed an order for two Aura Buds Pro but was informed they must place orders through the website or physical locations, leaving their request for direct order creation unresolved. All inquiries were conducted in English and Arabic.
+Between October 13 and 18, 2026, the user inquired about the AuraPhone 15, priced at $799.00, and compared the Aura Buds Pro ($179.99) with the Aura Buds Standard ($129.99), both featuring active noise cancellation. They learned that AuraTech operates 23 branches across Jordan, Syria, Saudi Arabia, and France, and were directed to the official website for further information. The return policy for opened AuraBuds allows returns only for defective items. The user faced challenges returning a defective AuraPhone 15 due to a missing customer ID but ultimately provided ID C008, which yielded no orders found. On October 18, the user confirmed an order for two Aura Buds Pro but was informed that orders must be placed through the website or physical locations. Throughout the inquiries, the user communicated in both English and Arabic.
 
 ## Recent sessions
-
-### 2026-10-18 20:45
-- User requested to create multiple orders.
-- Products discussed: Aura Phone 15 and AuraBuds Pro.
-- Orders created: 
-  - Two AuraPhone 15
-  - One AuraBuds Pro and two AuraPhone 15
-  - One AuraBuds Pro
-- Stock inquiries: 
-  - 150 units of AuraPhone 15 available.
-  - 280 units of AuraBuds Pro available.
-- User repeated requests for orders and stock information.
-- No unresolved issues; all orders were successfully created.
-- User's language: English.
 
 ### 2026-10-18 20:50
 - User wants to create an order.
@@ -92,5 +78,15 @@ Between October 13 and 18, 2026, the user inquired about the AuraPhone 15, price
 - Discussed **AuraPhone 15**.
 - Confirmed **146 units** available.
 - User initiated conversation with a greeting.
+- No unresolved issues noted.
+- Language used: **English**.
+
+### 2026-10-29 12:54
+- User inquired about the price of **Aura Phone 15**.
+- Clarified that the correct name is **AuraPhone 15**.
+- Confirmed the price as **$799.00**.
+- Stated there are **146 units in stock**.
+- User repeatedly asked about the price and stock availability.
+- All inquiries were addressed with consistent responses.
 - No unresolved issues noted.
 - Language used: **English**.
